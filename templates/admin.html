@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+    <style>
+        .status-badge {
+            font-size: 0.9rem;
+            padding: 0.35em 0.65em;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        @media (max-width: 768px) {
+            .card {
+                margin-bottom: 1rem;
+            }
+            h5 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    
+    <div class="container mt-4">
+        <h1 class="mb-4">Admin Dashboard</h1>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Sales Report (Active Bookings Only)</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th>Route</th>
+                                        <th class="text-end">Bookings</th>
+                                        <th class="text-end">Revenue</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in sales_report %}
+                                    <tr>
+                                        <td>{{ item.route }}</td>
+                                        <td class="text-end">{{ item.bookings_count }}</td>
+                                        <td class="text-end">£{{ "%.2f"|format(item.total_revenue|float) }}</td>
+                                        <td>
+                                            <form action="/admin/delete-flight/{{ item.journey_id }}" method="POST" 
+                                                  onsubmit="return confirm('Delete {{ item.route }}?')">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Recent Bookings (Last 10)</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>User</th>
+                                        <th>Route</th>
+                                        <th>Date</th>
+                                        <th class="text-end">Total</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in recent_bookings %}
+                                    <tr>
+                                        <td>{{ booking.booking_id }}</td>
+                                        <td>{{ booking.username }}</td>
+                                        <td>{{ booking.route }}</td>
+                                        <td>{{ booking.journey_date.strftime('%d %b %Y') }}</td>
+                                        <td class="text-end">£{{ "%.2f"|format(booking.total_price|float) }}</td>
+                                        <td>
+                                            {% if booking.status == 'cancelled' %}
+                                            <span class="badge bg-danger status-badge">Cancelled</span>
+                                            {% else %}
+                                            <span class="badge bg-success status-badge">Active</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">Seat Class Statistics</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Seat Class</th>
+                                    <th class="text-end">Bookings</th>
+                                    <th class="text-end">Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in seat_stats %}
+                                <tr>
+                                    <td>{{ stat.seat_type|title }}</td>
+                                    <td class="text-end">{{ stat.total_bookings }}</td>
+                                    <td class="text-end">£{{ "%.2f"|format(stat.total_revenue|float) }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="/admin/add-flight" class="btn btn-primary btn-sm">
+                                <i class="bi bi-plus-circle"></i> Add New Flight
+                            </a>
+                            <a href="/bookings" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-list-ul"></i> View All Bookings
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

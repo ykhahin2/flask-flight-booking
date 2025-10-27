@@ -1,0 +1,21 @@
+<link href="{{ url_for('static', filename='styles.css') }}" rel="stylesheet">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+        <a class="navbar-brand" href="/">Horizon Travels</a>
+        <div class="navbar-nav">
+            {% if 'user_id' in session %}
+                <span class="nav-item text-light me-3">
+                    Welcome, {{ session.username }} ({{ session.role }})
+                </span>
+                {% if session.role == 'admin' %}
+                    <a class="nav-link" href="/admin">Admin</a>
+                {% endif %}
+                <a class="nav-link" href="/bookings">My Bookings</a>
+                <a class="nav-link" href="/logout">Logout</a>
+            {% else %}
+                <a class="nav-link" href="/login">Login</a>
+                <a class="nav-link" href="/register">Register</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
