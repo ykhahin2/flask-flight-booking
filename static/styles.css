@@ -1,0 +1,9 @@
+@media (max-width: 767px) { /* Mobile */
+  .table-responsive { overflow-x: auto; }
+  .navbar-brand { font-size: 1.1rem; }
+  .btn { width: 100%; margin: 5px 0; }
+}
+
+@media (768px-991px) { /* Tablet */
+  .col-md-6 { width: 100%; }
+}
