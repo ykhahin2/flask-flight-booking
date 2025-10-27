@@ -8,6 +8,9 @@ A simple flight booking system built with Flask and MySQL.
 
 ## Setup
 pip install -r requirements.txt
+
 Import the booking.sql into your MySQL database
+
 Run the Flask application
+
 Server runs on http://localhost:5000
